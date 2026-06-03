@@ -3,7 +3,6 @@ package com.carmen.trainup;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,29 +13,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText edtEmail, edtPassword;
+    private EditText etEmail, etPassword;
     private Button btnLogin;
     private TextView txtRegister;
 
     private final OkHttpClient client = new OkHttpClient();
 
-    private String accessTokenGlobal = "";
-    private String emailUsuarioGlobal = "";
+    private String accessToken = "";
+    private String emailUsuario = "";
+    private String authId = "";
 
-    public static final MediaType JSON =
+    private static final MediaType JSON =
             MediaType.get("application/json; charset=utf-8");
 
     @Override
@@ -44,22 +38,21 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        edtEmail = findViewById(R.id.etEmail);
-        edtPassword = findViewById(R.id.etPassword);
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         txtRegister = findViewById(R.id.txtRegister);
 
-        txtRegister.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
-        });
+        txtRegister.setOnClickListener(v ->
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
 
         btnLogin.setOnClickListener(v -> iniciarSesion());
     }
 
     private void iniciarSesion() {
-        String email = edtEmail.getText().toString().trim().toLowerCase();
-        String password = edtPassword.getText().toString().trim();
+
+        String email = etEmail.getText().toString().trim().toLowerCase();
+        String password = etPassword.getText().toString().trim();
 
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Introduce email y contraseña", Toast.LENGTH_SHORT).show();
@@ -67,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         try {
+
             JSONObject json = new JSONObject();
             json.put("email", email);
             json.put("password", password);
@@ -81,141 +75,110 @@ public class LoginActivity extends AppCompatActivity {
                     .post(body)
                     .build();
 
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.e("LOGIN_ERROR", "Error de conexión", e);
+            client.newCall(request).enqueue(new okhttp3.Callback() {
 
+                @Override
+                public void onFailure(okhttp3.Call call, java.io.IOException e) {
                     runOnUiThread(() ->
-                            Toast.makeText(LoginActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show()
-                    );
+                            Toast.makeText(LoginActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show());
                 }
 
                 @Override
-                public void onResponse(Call call, Response response) throws IOException {
+                public void onResponse(okhttp3.Call call, okhttp3.Response response) throws java.io.IOException {
+
                     String respuesta = response.body() != null ? response.body().string() : "";
 
-                    Log.d("LOGIN_CODE", String.valueOf(response.code()));
-                    Log.d("LOGIN_RESPONSE", respuesta);
-
                     if (response.isSuccessful()) {
+
                         try {
+
                             JSONObject jsonRespuesta = new JSONObject(respuesta);
 
-                            accessTokenGlobal = jsonRespuesta.getString("access_token");
+                            accessToken = jsonRespuesta.getString("access_token");
 
                             JSONObject user = jsonRespuesta.getJSONObject("user");
-                            emailUsuarioGlobal = user.getString("email").trim().toLowerCase();
 
-                            Log.d("EMAIL_LOGIN", emailUsuarioGlobal);
+                            emailUsuario = user.getString("email");
+                            authId = user.getString("id");
 
-                            consultarRolUsuario(emailUsuarioGlobal);
+                            consultarRol();
 
                         } catch (Exception e) {
-                            Log.e("LOGIN_ERROR", "Error leyendo respuesta", e);
 
                             runOnUiThread(() ->
-                                    Toast.makeText(LoginActivity.this, "Error al leer usuario", Toast.LENGTH_SHORT).show()
-                            );
+                                    Toast.makeText(LoginActivity.this, "Error leyendo usuario", Toast.LENGTH_SHORT).show());
                         }
 
                     } else {
-                        runOnUiThread(() ->
-                                Toast.makeText(LoginActivity.this, "Email o contraseña incorrectos", Toast.LENGTH_SHORT).show()
-                        );
-                    }
 
-                    response.close();
+                        runOnUiThread(() ->
+                                Toast.makeText(LoginActivity.this, "Email o contraseña incorrectos", Toast.LENGTH_SHORT).show());
+                    }
                 }
             });
 
         } catch (Exception e) {
-            Log.e("LOGIN_ERROR", "Error al iniciar sesión", e);
+
             Toast.makeText(this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void consultarRolUsuario(String emailUsuario) {
-        try {
-            String emailCodificado = URLEncoder.encode(emailUsuario, "UTF-8");
+    private void consultarRol() {
 
-            String url = SupabaseConfig.SUPABASE_URL
-                    + "/rest/v1/Usuario?select=Rol,Email_Usuario&Email_Usuario=ilike."
-                    + emailCodificado;
+        String url = SupabaseConfig.SUPABASE_URL
+                + "/rest/v1/Usuario?select=Rol,Auth_id&Auth_id=eq."
+                + authId;
 
-            Log.d("URL_ROL", url);
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("apikey", SupabaseConfig.SUPABASE_API_KEY)
+                .addHeader("Authorization", "Bearer " + accessToken)
+                .addHeader("Accept", "application/json")
+                .get()
+                .build();
 
-            Request request = new Request.Builder()
-                    .url(url)
-                    .addHeader("apikey", SupabaseConfig.SUPABASE_API_KEY)
-                    .addHeader("Authorization", "Bearer " + accessTokenGlobal)
-                    .addHeader("Content-Type", "application/json")
-                    .addHeader("Accept", "application/json")
-                    .get()
-                    .build();
+        client.newCall(request).enqueue(new okhttp3.Callback() {
 
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.e("ROL_ERROR", "Error consultando rol", e);
+            @Override
+            public void onFailure(okhttp3.Call call, java.io.IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(LoginActivity.this, "Error obteniendo rol", Toast.LENGTH_SHORT).show());
+            }
 
-                    runOnUiThread(() ->
-                            Toast.makeText(LoginActivity.this, "Error obteniendo rol", Toast.LENGTH_SHORT).show()
-                    );
-                }
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws java.io.IOException {
 
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    String respuesta = response.body() != null ? response.body().string() : "";
+                String respuesta = response.body() != null ? response.body().string() : "";
 
-                    Log.d("ROL_CODE", String.valueOf(response.code()));
-                    Log.d("ROL_RESPONSE", respuesta);
+                try {
+                    JSONArray array = new JSONArray(respuesta);
 
-                    if (response.isSuccessful()) {
-                        try {
-                            JSONArray array = new JSONArray(respuesta);
-
-                            if (array.length() > 0) {
-                                JSONObject usuario = array.getJSONObject(0);
-                                String rol = usuario.optString("Rol", "cliente");
-
-                                abrirPantallaSegunRol(rol);
-                            } else {
-                                runOnUiThread(() ->
-                                        Toast.makeText(LoginActivity.this,
-                                                "Usuario no encontrado en tabla Usuario",
-                                                Toast.LENGTH_LONG).show()
-                                );
-                            }
-
-                        } catch (Exception e) {
-                            Log.e("ROL_ERROR", "Error leyendo rol", e);
-
-                            runOnUiThread(() ->
-                                    Toast.makeText(LoginActivity.this, "Error al leer rol", Toast.LENGTH_SHORT).show()
-                            );
-                        }
-                    } else {
+                    if (array.length() == 0) {
                         runOnUiThread(() ->
-                                Toast.makeText(LoginActivity.this, "No se pudo consultar el rol", Toast.LENGTH_SHORT).show()
-                        );
+                                Toast.makeText(LoginActivity.this, "Usuario no encontrado", Toast.LENGTH_LONG).show());
+                        return;
                     }
 
-                    response.close();
-                }
-            });
+                    String rol = array.getJSONObject(0).getString("Rol");
+                    abrirPantalla(rol);
 
-        } catch (Exception e) {
-            Log.e("ROL_ERROR", "Error preparando consulta de rol", e);
-        }
+                } catch (Exception e) {
+                    runOnUiThread(() ->
+                            Toast.makeText(LoginActivity.this, "Error leyendo rol", Toast.LENGTH_SHORT).show());
+                }
+            }
+        });
     }
 
-    private void abrirPantallaSegunRol(String rol) {
+    private void abrirPantalla(String rol) {
+
         runOnUiThread(() -> {
+
             SharedPreferences prefs = getSharedPreferences("TrainUpPrefs", MODE_PRIVATE);
+
             prefs.edit()
-                    .putString("access_token", accessTokenGlobal)
-                    .putString("email", emailUsuarioGlobal)
+                    .putString("access_token", accessToken)
+                    .putString("email", emailUsuario)
                     .putString("rol", rol)
                     .apply();
 
@@ -226,10 +189,6 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 intent = new Intent(LoginActivity.this, MainActivity.class);
             }
-
-            intent.putExtra("access_token", accessTokenGlobal);
-            intent.putExtra("email", emailUsuarioGlobal);
-            intent.putExtra("rol", rol);
 
             startActivity(intent);
             finish();
