@@ -60,7 +60,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         try {
-
             JSONObject json = new JSONObject();
             json.put("email", email);
             json.put("password", password);
@@ -89,9 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                     String respuesta = response.body() != null ? response.body().string() : "";
 
                     if (response.isSuccessful()) {
-
                         try {
-
                             JSONObject jsonRespuesta = new JSONObject(respuesta);
 
                             accessToken = jsonRespuesta.getString("access_token");
@@ -101,16 +98,14 @@ public class LoginActivity extends AppCompatActivity {
                             emailUsuario = user.getString("email");
                             authId = user.getString("id");
 
-                            consultarRol();
+                            consultarDatosUsuario();
 
                         } catch (Exception e) {
-
                             runOnUiThread(() ->
                                     Toast.makeText(LoginActivity.this, "Error leyendo usuario", Toast.LENGTH_SHORT).show());
                         }
 
                     } else {
-
                         runOnUiThread(() ->
                                 Toast.makeText(LoginActivity.this, "Email o contraseña incorrectos", Toast.LENGTH_SHORT).show());
                     }
@@ -118,15 +113,14 @@ public class LoginActivity extends AppCompatActivity {
             });
 
         } catch (Exception e) {
-
             Toast.makeText(this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void consultarRol() {
+    private void consultarDatosUsuario() {
 
         String url = SupabaseConfig.SUPABASE_URL
-                + "/rest/v1/Usuario?select=Rol,Auth_id&Auth_id=eq."
+                + "/rest/v1/Usuario?select=Rol,Auth_id,ID_Gimnasio&Auth_id=eq."
                 + authId;
 
         Request request = new Request.Builder()
@@ -142,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(okhttp3.Call call, java.io.IOException e) {
                 runOnUiThread(() ->
-                        Toast.makeText(LoginActivity.this, "Error obteniendo rol", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(LoginActivity.this, "Error obteniendo usuario", Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -159,35 +153,58 @@ public class LoginActivity extends AppCompatActivity {
                         return;
                     }
 
-                    String rol = array.getJSONObject(0).getString("Rol");
-                    abrirPantalla(rol);
+                    JSONObject usuario = array.getJSONObject(0);
+
+                    String rol = usuario.optString("Rol", "cliente");
+
+                    boolean tieneGimnasio =
+                            usuario.has("ID_Gimnasio") && !usuario.isNull("ID_Gimnasio");
+
+                    int idGimnasio = -1;
+
+                    if (tieneGimnasio) {
+                        idGimnasio = usuario.getInt("ID_Gimnasio");
+                    }
+
+                    abrirPantalla(rol, tieneGimnasio, idGimnasio);
 
                 } catch (Exception e) {
                     runOnUiThread(() ->
-                            Toast.makeText(LoginActivity.this, "Error leyendo rol", Toast.LENGTH_SHORT).show());
+                            Toast.makeText(LoginActivity.this, "Error leyendo datos del usuario", Toast.LENGTH_SHORT).show());
                 }
             }
         });
     }
 
-    private void abrirPantalla(String rol) {
+    private void abrirPantalla(String rol, boolean tieneGimnasio, int idGimnasio) {
 
         runOnUiThread(() -> {
 
             SharedPreferences prefs = getSharedPreferences("TrainUpPrefs", MODE_PRIVATE);
 
-            prefs.edit()
+            SharedPreferences.Editor editor = prefs.edit()
                     .putString("access_token", accessToken)
                     .putString("email", emailUsuario)
-                    .putString("rol", rol)
-                    .apply();
+                    .putString("rol", rol);
+
+            if (tieneGimnasio) {
+                editor.putInt("id_gimnasio", idGimnasio);
+            } else {
+                editor.remove("id_gimnasio");
+            }
+
+            editor.apply();
 
             Intent intent;
 
             if (rol.equalsIgnoreCase("administrador")) {
                 intent = new Intent(LoginActivity.this, AdminMainActivity.class);
             } else {
-                intent = new Intent(LoginActivity.this, MainActivity.class);
+                if (tieneGimnasio) {
+                    intent = new Intent(LoginActivity.this, MainActivity.class);
+                } else {
+                    intent = new Intent(LoginActivity.this, GymListActivity.class);
+                }
             }
 
             startActivity(intent);
