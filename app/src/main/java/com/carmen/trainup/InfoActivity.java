@@ -1,6 +1,8 @@
 package com.carmen.trainup;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,10 +21,11 @@ public class InfoActivity extends AppCompatActivity {
     private TextView txtNombreGimnasioInfo;
     private TextView txtCiudadGimnasioInfo;
     private TextView txtDescripcionGimnasioInfo;
-
     private TextView txtDireccionGimnasioInfo;
     private TextView txtEmailGimnasioInfo;
     private TextView txtTelefonoGimnasioInfo;
+
+    private Button btnApuntarse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,24 +44,25 @@ public class InfoActivity extends AppCompatActivity {
         txtNombreGimnasioInfo = findViewById(R.id.txtNombreGimnasioInfo);
         txtCiudadGimnasioInfo = findViewById(R.id.txtCiudadGimnasioInfo);
         txtDescripcionGimnasioInfo = findViewById(R.id.txtDescripcionGimnasioInfo);
-
         txtDireccionGimnasioInfo = findViewById(R.id.txtDireccionGimnasioInfo);
         txtEmailGimnasioInfo = findViewById(R.id.txtEmailGimnasioInfo);
         txtTelefonoGimnasioInfo = findViewById(R.id.txtTelefonoGimnasioInfo);
 
+        btnApuntarse = findViewById(R.id.btnApuntarse);
+
+        int idGimnasio = getIntent().getIntExtra("id_gimnasio", -1);
         String nombre = getIntent().getStringExtra("nombre_gimnasio");
         String ciudad = getIntent().getStringExtra("ciudad_gimnasio");
         String descripcion = getIntent().getStringExtra("descripcion_gimnasio");
         String imagen = getIntent().getStringExtra("imagen_gimnasio");
-
         String direccion = getIntent().getStringExtra("direccion_gimnasio");
         String email = getIntent().getStringExtra("email_gimnasio");
         String telefono = getIntent().getStringExtra("telefono_gimnasio");
+        String emailUsuario = getIntent().getStringExtra("email_usuario");
 
         txtNombreGimnasioInfo.setText(nombre);
         txtCiudadGimnasioInfo.setText(ciudad);
         txtDescripcionGimnasioInfo.setText(descripcion);
-
         txtDireccionGimnasioInfo.setText(direccion);
         txtEmailGimnasioInfo.setText(email);
         txtTelefonoGimnasioInfo.setText(telefono);
@@ -68,5 +72,13 @@ public class InfoActivity extends AppCompatActivity {
                 .placeholder(R.drawable.logo_trainup)
                 .error(R.drawable.logo_trainup)
                 .into(imgGimnasioInfo);
+
+        btnApuntarse.setOnClickListener(v -> {
+            Intent intent = new Intent(InfoActivity.this, PlanActivity.class);
+            intent.putExtra("id_gimnasio", idGimnasio);
+            intent.putExtra("nombre_gimnasio", nombre);
+            intent.putExtra("email_usuario", emailUsuario);
+            startActivity(intent);
+        });
     }
 }

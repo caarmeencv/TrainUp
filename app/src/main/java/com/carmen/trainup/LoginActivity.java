@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
     private void consultarDatosUsuario() {
 
         String url = SupabaseConfig.SUPABASE_URL
-                + "/rest/v1/Usuario?select=Rol,Auth_id,ID_Gimnasio&Auth_id=eq."
+                + "/rest/v1/Usuario?select=ID_Usuario,Rol,Auth_id,ID_Gimnasio&Auth_id=eq."
                 + authId;
 
         Request request = new Request.Builder()
@@ -155,6 +155,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     JSONObject usuario = array.getJSONObject(0);
 
+                    int idUsuario = usuario.getInt("ID_Usuario");
                     String rol = usuario.optString("Rol", "cliente");
 
                     boolean tieneGimnasio =
@@ -166,7 +167,7 @@ public class LoginActivity extends AppCompatActivity {
                         idGimnasio = usuario.getInt("ID_Gimnasio");
                     }
 
-                    abrirPantalla(rol, tieneGimnasio, idGimnasio);
+                    abrirPantalla(rol, tieneGimnasio, idGimnasio, idUsuario);
 
                 } catch (Exception e) {
                     runOnUiThread(() ->
@@ -176,7 +177,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void abrirPantalla(String rol, boolean tieneGimnasio, int idGimnasio) {
+    private void abrirPantalla(String rol, boolean tieneGimnasio, int idGimnasio, int idUsuario) {
 
         runOnUiThread(() -> {
 
@@ -185,7 +186,8 @@ public class LoginActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = prefs.edit()
                     .putString("access_token", accessToken)
                     .putString("email", emailUsuario)
-                    .putString("rol", rol);
+                    .putString("rol", rol)
+                    .putInt("id_usuario", idUsuario);
 
             if (tieneGimnasio) {
                 editor.putInt("id_gimnasio", idGimnasio);
