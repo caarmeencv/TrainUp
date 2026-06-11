@@ -1,5 +1,6 @@
 package com.carmen.trainup.admin;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,9 +9,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.carmen.trainup.cliente.EditProfileActivity;
-import com.carmen.trainup.auth.LoginActivity;
 import com.carmen.trainup.R;
+import com.carmen.trainup.auth.LoginActivity;
+import com.carmen.trainup.cliente.EditProfileActivity;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -39,29 +40,57 @@ public class AdminAjustesActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("TrainUpPrefs", MODE_PRIVATE);
 
         String email = prefs.getString("email", "Sin email");
-        String rol = prefs.getString("rol", "cliente");
+        String rol = prefs.getString("rol", "admin");
 
         txtEmailAjustes.setText(email);
 
         if (!rol.isEmpty()) {
-            txtRolAjustes.setText(rol.substring(0, 1).toUpperCase() + rol.substring(1));
+            txtRolAjustes.setText(
+                    rol.substring(0, 1).toUpperCase() + rol.substring(1)
+            );
         } else {
-            txtRolAjustes.setText("Cliente");
+            txtRolAjustes.setText("Admin");
         }
 
         btnEditarPerfil.setOnClickListener(v -> {
-            Intent intent = new Intent(AdminAjustesActivity.this, EditProfileActivity.class);
+            Intent intent = new Intent(
+                    AdminAjustesActivity.this,
+                    EditProfileActivity.class
+            );
             startActivity(intent);
         });
 
+        btnCerrarSesion.setOnClickListener(v -> mostrarDialogoCerrarSesion());
+    }
 
-        btnCerrarSesion.setOnClickListener(v -> {
-            prefs.edit().clear().apply();
+    private void mostrarDialogoCerrarSesion() {
+        new AlertDialog.Builder(this)
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Seguro que quieres cerrar sesión?")
+                .setPositiveButton("Sí, cerrar sesión",
+                        (dialog, which) -> cerrarSesion())
+                .setNegativeButton("Cancelar",
+                        (dialog, which) -> dialog.dismiss())
+                .show();
+    }
 
-            Intent intent = new Intent(AdminAjustesActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        });
+    private void cerrarSesion() {
+        SharedPreferences prefs =
+                getSharedPreferences("TrainUpPrefs", MODE_PRIVATE);
+
+        prefs.edit().clear().apply();
+
+        Intent intent = new Intent(
+                AdminAjustesActivity.this,
+                LoginActivity.class
+        );
+
+        intent.setFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
+        );
+
+        startActivity(intent);
+        finish();
     }
 }

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.carmen.trainup.R;
@@ -79,7 +80,16 @@ public class InfoActivity2 extends AppCompatActivity {
 
         cargarDatosGimnasio();
 
-        btnDarseDeBaja.setOnClickListener(v -> darseDeBaja());
+        btnDarseDeBaja.setOnClickListener(v -> mostrarDialogoBaja());
+    }
+
+    private void mostrarDialogoBaja() {
+        new AlertDialog.Builder(this)
+                .setTitle("Confirmar baja")
+                .setMessage("¿Estás segura de que quieres darte de baja de este gimnasio?\n\nPerderás el plan asociado y dejarás de pertenecer al gimnasio.")
+                .setPositiveButton("Sí, darme de baja", (dialog, which) -> darseDeBaja())
+                .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     private void cargarDatosGimnasio() {

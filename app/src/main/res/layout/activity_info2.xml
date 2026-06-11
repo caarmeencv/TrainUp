@@ -93,7 +93,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="40dp"
-                android:background="#000000"
+                android:backgroundTint="#000000"
                 android:text="Darse de baja del gimnasio"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"

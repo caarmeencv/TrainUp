@@ -1,5 +1,6 @@
 package com.carmen.trainup.cliente;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,8 +11,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.carmen.trainup.R;
-import com.carmen.trainup.utils.SupabaseConfig;
 import com.carmen.trainup.auth.LoginActivity;
+import com.carmen.trainup.utils.SupabaseConfig;
 
 import org.json.JSONObject;
 
@@ -61,16 +62,37 @@ public class SettingsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        btnCambiarGimnasio.setOnClickListener(v -> cambiarGimnasio());
+        btnCambiarGimnasio.setOnClickListener(v -> mostrarDialogoCambiarGimnasio());
 
-        btnCerrarSesion.setOnClickListener(v -> {
-            prefs.edit().clear().apply();
+        btnCerrarSesion.setOnClickListener(v -> mostrarDialogoCerrarSesion());
+    }
 
-            Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        });
+    private void mostrarDialogoCambiarGimnasio() {
+        new AlertDialog.Builder(SettingsActivity.this)
+                .setTitle("Cambiar gimnasio")
+                .setMessage("¿Seguro que quieres cambiar de gimnasio? Se eliminará tu gimnasio actual y tendrás que seleccionar uno nuevo.")
+                .setPositiveButton("Sí, cambiar", (dialog, which) -> cambiarGimnasio())
+                .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void mostrarDialogoCerrarSesion() {
+        new AlertDialog.Builder(SettingsActivity.this)
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Seguro que quieres cerrar sesión?")
+                .setPositiveButton("Sí, cerrar sesión", (dialog, which) -> cerrarSesion())
+                .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void cerrarSesion() {
+        SharedPreferences prefs = getSharedPreferences("TrainUpPrefs", MODE_PRIVATE);
+        prefs.edit().clear().apply();
+
+        Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void cambiarGimnasio() {

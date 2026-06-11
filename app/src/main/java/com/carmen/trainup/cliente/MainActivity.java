@@ -1,5 +1,6 @@
 package com.carmen.trainup.cliente;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,8 +16,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.carmen.trainup.R;
-import com.carmen.trainup.utils.SupabaseConfig;
 import com.carmen.trainup.auth.LoginActivity;
+import com.carmen.trainup.utils.SupabaseConfig;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -81,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
         btnRutinas.setOnClickListener(v -> abrirRutinas());
         btnClases.setOnClickListener(v -> abrirClases());
         btnGimnasios.setOnClickListener(v -> abrirInfoGimnasio());
-
         btnVerClases.setOnClickListener(v -> abrirReservas());
 
         btnMenu.setOnClickListener(v -> mostrarMenu());
@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     long idClase = reserva.getLong("ID_Clase");
-
                     JSONObject clase = obtenerClasePorId(idClase);
 
                     if (clase == null) {
@@ -208,7 +207,6 @@ public class MainActivity extends AppCompatActivity {
                     if (finalProximaClase != null) {
                         try {
                             String nombre = finalProximaClase.getString("Nombre_Clase");
-                            String fecha = finalProximaClase.getString("Fecha_Clase");
                             String hora = finalProximaClase.getString("Hora_Clase");
                             String sala = finalProximaClase.optString("Sala", "");
 
@@ -295,12 +293,21 @@ public class MainActivity extends AppCompatActivity {
             else if (opcion.equals("Mis reservas")) abrirReservas();
             else if (opcion.equals("Información de gimnasio")) abrirInfoGimnasio();
             else if (opcion.equals("Ajustes")) abrirAjustes();
-            else if (opcion.equals("Cerrar sesión")) cerrarSesion();
+            else if (opcion.equals("Cerrar sesión")) mostrarDialogoCerrarSesion();
 
             return true;
         });
 
         popupMenu.show();
+    }
+
+    private void mostrarDialogoCerrarSesion() {
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Seguro que quieres cerrar sesión?")
+                .setPositiveButton("Sí, cerrar sesión", (dialog, which) -> cerrarSesion())
+                .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     private void abrirRutinas() {
@@ -330,6 +337,7 @@ public class MainActivity extends AppCompatActivity {
         prefs.edit().clear().apply();
 
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }

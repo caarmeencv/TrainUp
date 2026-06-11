@@ -1,5 +1,6 @@
 package com.carmen.trainup.cliente;
 
+import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,9 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.carmen.trainup.R;
-import com.carmen.trainup.utils.SupabaseConfig;
 import com.carmen.trainup.adapters.ReservaAdapter;
 import com.carmen.trainup.models.Reserva;
+import com.carmen.trainup.utils.SupabaseConfig;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -54,7 +55,7 @@ public class ReservasActivity extends AppCompatActivity {
         listaReservas = new ArrayList<>();
 
         reservaAdapter = new ReservaAdapter(listaReservas, reserva -> {
-            cancelarReserva(reserva);
+            mostrarDialogoCancelarReserva(reserva);
         });
 
         rvReservas.setLayoutManager(new LinearLayoutManager(this));
@@ -84,13 +85,21 @@ public class ReservasActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(okhttp3.Call call, java.io.IOException e) {
                     runOnUiThread(() ->
-                            Toast.makeText(ReservasActivity.this, "Error cargando usuario", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                    ReservasActivity.this,
+                                    "Error cargando usuario",
+                                    Toast.LENGTH_LONG
+                            ).show()
                     );
                 }
 
                 @Override
-                public void onResponse(okhttp3.Call call, okhttp3.Response response) throws java.io.IOException {
-                    String respuesta = response.body() != null ? response.body().string() : "";
+                public void onResponse(okhttp3.Call call, okhttp3.Response response)
+                        throws java.io.IOException {
+
+                    String respuesta = response.body() != null
+                            ? response.body().string()
+                            : "";
 
                     try {
                         JSONArray array = new JSONArray(respuesta);
@@ -104,7 +113,11 @@ public class ReservasActivity extends AppCompatActivity {
                         } else {
                             runOnUiThread(() -> {
                                 txtSinReservas.setVisibility(View.VISIBLE);
-                                Toast.makeText(ReservasActivity.this, "No se encontró el usuario", Toast.LENGTH_LONG).show();
+                                Toast.makeText(
+                                        ReservasActivity.this,
+                                        "No se encontró el usuario",
+                                        Toast.LENGTH_LONG
+                                ).show();
                             });
                         }
 
@@ -137,13 +150,21 @@ public class ReservasActivity extends AppCompatActivity {
             @Override
             public void onFailure(okhttp3.Call call, java.io.IOException e) {
                 runOnUiThread(() ->
-                        Toast.makeText(ReservasActivity.this, "Error cargando reservas", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                                ReservasActivity.this,
+                                "Error cargando reservas",
+                                Toast.LENGTH_LONG
+                        ).show()
                 );
             }
 
             @Override
-            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws java.io.IOException {
-                String respuesta = response.body() != null ? response.body().string() : "";
+            public void onResponse(okhttp3.Call call, okhttp3.Response response)
+                    throws java.io.IOException {
+
+                String respuesta = response.body() != null
+                        ? response.body().string()
+                        : "";
 
                 Log.d("RESERVAS", "Respuesta: " + respuesta);
 
@@ -176,7 +197,10 @@ public class ReservasActivity extends AppCompatActivity {
 
                     runOnUiThread(() -> {
                         reservaAdapter.notifyDataSetChanged();
-                        txtSinReservas.setVisibility(listaReservas.isEmpty() ? View.VISIBLE : View.GONE);
+
+                        txtSinReservas.setVisibility(
+                                listaReservas.isEmpty() ? View.VISIBLE : View.GONE
+                        );
                     });
 
                 } catch (Exception e) {
@@ -184,6 +208,15 @@ public class ReservasActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void mostrarDialogoCancelarReserva(Reserva reserva) {
+        new AlertDialog.Builder(ReservasActivity.this)
+                .setTitle("Cancelar reserva")
+                .setMessage("¿Seguro que quieres cancelar esta reserva?")
+                .setPositiveButton("Sí, cancelar", (dialog, which) -> cancelarReserva(reserva))
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     private void cancelarReserva(Reserva reserva) {
@@ -204,29 +237,46 @@ public class ReservasActivity extends AppCompatActivity {
             @Override
             public void onFailure(okhttp3.Call call, java.io.IOException e) {
                 runOnUiThread(() ->
-                        Toast.makeText(ReservasActivity.this, "Error cancelando reserva", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                                ReservasActivity.this,
+                                "Error cancelando reserva",
+                                Toast.LENGTH_LONG
+                        ).show()
                 );
             }
 
             @Override
-            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws java.io.IOException {
+            public void onResponse(okhttp3.Call call, okhttp3.Response response)
+                    throws java.io.IOException {
 
-                String respuesta = response.body() != null ? response.body().string() : "";
+                String respuesta = response.body() != null
+                        ? response.body().string()
+                        : "";
 
                 if (response.isSuccessful()) {
                     runOnUiThread(() -> {
                         listaReservas.remove(reserva);
                         reservaAdapter.notifyDataSetChanged();
 
-                        txtSinReservas.setVisibility(listaReservas.isEmpty() ? View.VISIBLE : View.GONE);
+                        txtSinReservas.setVisibility(
+                                listaReservas.isEmpty() ? View.VISIBLE : View.GONE
+                        );
 
-                        Toast.makeText(ReservasActivity.this, "Reserva cancelada", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(
+                                ReservasActivity.this,
+                                "Reserva cancelada",
+                                Toast.LENGTH_SHORT
+                        ).show();
                     });
                 } else {
                     Log.e("RESERVAS", "Error cancelar: " + respuesta);
 
                     runOnUiThread(() ->
-                            Toast.makeText(ReservasActivity.this, "No se pudo cancelar", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                    ReservasActivity.this,
+                                    "No se pudo cancelar",
+                                    Toast.LENGTH_LONG
+                            ).show()
                     );
                 }
             }

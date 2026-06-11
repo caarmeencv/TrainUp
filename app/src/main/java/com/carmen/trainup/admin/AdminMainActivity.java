@@ -7,10 +7,11 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.carmen.trainup.auth.LoginActivity;
 import com.carmen.trainup.R;
+import com.carmen.trainup.auth.LoginActivity;
 
 public class AdminMainActivity extends AppCompatActivity {
 
@@ -57,7 +58,7 @@ public class AdminMainActivity extends AppCompatActivity {
     private void mostrarMenu() {
         PopupMenu popupMenu = new PopupMenu(AdminMainActivity.this, btnMenu);
 
-        popupMenu.getMenu().add("Editar perfil");
+        popupMenu.getMenu().add("Ajustes");
         popupMenu.getMenu().add("Clases");
         popupMenu.getMenu().add("Reservas");
         popupMenu.getMenu().add("Gimnasio");
@@ -67,8 +68,8 @@ public class AdminMainActivity extends AppCompatActivity {
         popupMenu.setOnMenuItemClickListener(item -> {
             String opcion = item.getTitle().toString();
 
-            if (opcion.equals("Editar perfil")) {
-                abrirEditarPerfil();
+            if (opcion.equals("Ajustes")) {
+                abrirAjustes();
             } else if (opcion.equals("Clases")) {
                 abrirClases();
             } else if (opcion.equals("Reservas")) {
@@ -78,7 +79,7 @@ public class AdminMainActivity extends AppCompatActivity {
             } else if (opcion.equals("Usuarios")) {
                 abrirUsuarios();
             } else if (opcion.equals("Cerrar sesión")) {
-                cerrarSesion();
+                mostrarDialogoCerrarSesion();
             }
 
             return true;
@@ -87,7 +88,16 @@ public class AdminMainActivity extends AppCompatActivity {
         popupMenu.show();
     }
 
-    private void abrirEditarPerfil() {
+    private void mostrarDialogoCerrarSesion() {
+        new AlertDialog.Builder(this)
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Estás segura de que quieres cerrar sesión?")
+                .setPositiveButton("Sí, cerrar sesión", (dialog, which) -> cerrarSesion())
+                .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void abrirAjustes() {
         Intent intent = new Intent(AdminMainActivity.this, AdminAjustesActivity.class);
         startActivity(intent);
     }
@@ -117,6 +127,7 @@ public class AdminMainActivity extends AppCompatActivity {
         prefs.edit().clear().apply();
 
         Intent intent = new Intent(AdminMainActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
