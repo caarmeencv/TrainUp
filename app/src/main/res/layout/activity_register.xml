@@ -9,7 +9,7 @@
     android:paddingEnd="32dp"
     android:scrollbarStyle="outsideOverlay"
     android:scrollbars="vertical"
-    tools:context=".RegisterActivity">
+    tools:context=".auth.RegisterActivity">
 
     <LinearLayout
         android:id="@+id/main"

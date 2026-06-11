@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:background="#FFFFFF"
-    tools:context=".InfoActivity">
+    tools:context=".cliente.InfoActivity">
 
     <LinearLayout
         android:id="@+id/main"

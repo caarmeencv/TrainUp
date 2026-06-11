@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_card"
+    android:padding="14dp"
+    android:layout_marginBottom="16dp">
+
+    <ImageView
+        android:id="@+id/imgClase"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:contentDescription="@string/app_name"
+        android:scaleType="centerCrop"
+        android:src="@drawable/logo_trainup" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="16dp">
+
+        <TextView
+            android:id="@+id/txtNombreClase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yoga"
+            android:textColor="#111111"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtMonitorClase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Monitor"
+            android:textColor="#666666"
+            android:textSize="15sp"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/txtFechaHoraClase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2026-07-16 · 18:00"
+            android:textColor="#777777"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/txtSalaClase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sala Marea"
+            android:textColor="#777777"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
+
+        <Button
+            android:id="@+id/btnReservarClase"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Reservar"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#FF2D7A"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

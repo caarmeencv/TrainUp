@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Editar clase"
+            android:textColor="#FF2D7A"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imgClase"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/bg_card_soft_pink"
+            android:scaleType="centerCrop"
+            android:src="@drawable/logo_trainup" />
+
+        <TextView
+            android:id="@+id/btnSeleccionarImagen"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_button_white"
+            android:gravity="center"
+            android:text="Seleccionar imagen"
+            android:textColor="#FF2D7A"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etNombreClase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:hint="Nombre de la clase" />
+
+        <EditText
+            android:id="@+id/etDescripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Descripción" />
+
+        <EditText
+            android:id="@+id/etFecha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Fecha 2026-06-11" />
+
+        <EditText
+            android:id="@+id/etHora"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Hora 18:00" />
+
+        <EditText
+            android:id="@+id/etPlazas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Plazas máximas"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/etDuracion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Duración en minutos"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/etSala"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Sala" />
+
+        <EditText
+            android:id="@+id/etMonitor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Monitor" />
+
+        <TextView
+            android:id="@+id/btnGuardarClase"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/bg_button_pink"
+            android:gravity="center"
+            android:text="Guardar cambios"
+            android:textColor="#FFFFFF"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</ScrollView>

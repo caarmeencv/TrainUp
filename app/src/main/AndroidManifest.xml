@@ -14,16 +14,55 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TrainUp">
         <activity
-            android:name=".SettingsActivity"
+            android:name=".AdminEditarPerfilActivity"
             android:exported="false" />
         <activity
-            android:name=".PlanActivity"
+            android:name=".admin.AdminEditarClaseActivity"
             android:exported="false" />
         <activity
-            android:name=".AdminMainActivity"
+            android:name=".admin.AdminCrearClaseActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".admin.AdminAjustesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.AdminUsuariosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.AdminGimnasioActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.AdminReservasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.AdminClasesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".cliente.ReservasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".cliente.VerRutinaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".cliente.MisRutinasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".cliente.EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".cliente.InfoActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".cliente.SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".cliente.PlanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.AdminMainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".cliente.MainActivity"
             android:exported="false"
             android:theme="@style/Theme.TrainUp" />
         <activity
@@ -33,34 +72,34 @@
             android:name=".ProgresoActivity"
             android:exported="false" />
         <activity
-            android:name=".PerfilUsuarioActivity"
+            android:name=".cliente.PerfilUsuarioActivity"
             android:exported="false" />
         <activity
-            android:name=".CrearRutinaActivity"
+            android:name=".cliente.CrearRutinaActivity"
             android:exported="false" />
         <activity
-            android:name=".RutinaActivity"
+            android:name=".cliente.RutinaActivity"
             android:exported="false" />
         <activity
             android:name=".BookActivity"
             android:exported="false" />
         <activity
-            android:name=".ClassListActivity"
+            android:name=".cliente.ClassListActivity"
             android:exported="false" />
         <activity
-            android:name=".InfoActivity"
+            android:name=".cliente.InfoActivity"
             android:exported="false" />
         <activity
-            android:name=".GymListActivity"
+            android:name=".cliente.GymListActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".auth.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".auth.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".OnBoardingActivity"
+            android:name=".auth.OnBoardingActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

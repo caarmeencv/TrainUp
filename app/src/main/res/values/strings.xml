@@ -9,7 +9,6 @@
         <item>Selecciona género</item>
         <item>Femenino</item>
         <item>Masculino</item>
-        <item>Otro</item>
         <item>Prefiero no decirlo</item>
     </string-array>
     <string name="lorem_ipsum">

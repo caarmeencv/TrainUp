@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#FFFFFF"
+    tools:context=".cliente.InfoActivity">
+
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imgGimnasioInfo"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:src="@drawable/logo_trainup"
+            android:scaleType="centerCrop"
+            android:contentDescription="Imagen del gimnasio" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:paddingTop="28dp"
+            android:paddingBottom="32dp">
+
+            <TextView
+                android:id="@+id/txtNombreGimnasioInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nombre del gimnasio"
+                android:textAlignment="center"
+                android:textColor="#111111"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtCiudadGimnasioInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ciudad"
+                android:textAlignment="center"
+                android:textColor="#FF2D7A"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/txtDescripcionGimnasioInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Descripción del gimnasio"
+                android:textAlignment="center"
+                android:textColor="#666666"
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginTop="22dp" />
+
+            <TextView
+                android:id="@+id/txtDireccionGimnasioInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dirección"
+                android:textColor="#111111"
+                android:textSize="16sp"
+                android:layout_marginTop="28dp" />
+
+            <TextView
+                android:id="@+id/txtEmailGimnasioInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:textColor="#111111"
+                android:textSize="16sp"
+                android:layout_marginTop="12dp" />
+
+            <TextView
+                android:id="@+id/txtTelefonoGimnasioInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Teléfono"
+                android:textColor="#111111"
+                android:textSize="16sp"
+                android:layout_marginTop="12dp" />
+            <Button
+                android:id="@+id/btnDarseDeBaja"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="40dp"
+                android:background="#000000"
+                android:text="Darse de baja del gimnasio"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

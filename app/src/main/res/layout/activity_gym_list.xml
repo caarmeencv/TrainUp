@@ -9,7 +9,7 @@
     android:paddingStart="32dp"
     android:paddingEnd="32dp"
     android:paddingTop="40dp"
-    tools:context=".GymListActivity">
+    tools:context=".cliente.GymListActivity">
 
     <ImageView
         android:id="@+id/imgLogo"

@@ -1,175 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:fillViewport="true"
+    tools:context=".cliente.CrearRutinaActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="28dp">
 
-        <!-- Título -->
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Crear rutina"
             android:textColor="#111111"
-            android:textSize="30sp"
+            android:textSize="32sp"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Diseña tu entrenamiento personalizado"
-            android:textColor="#777777"
-            android:textSize="16sp"
-            android:layout_marginTop="6dp" />
-
-        <!-- Nombre rutina -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nombre de la rutina"
-            android:textColor="#111111"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="28dp" />
+            android:layout_marginTop="6dp"
+            android:text="Crea una rutina personalizada añadiendo tus ejercicios"
+            android:textColor="#666666"
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/etNombreRutina"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:layout_marginTop="10dp"
-            android:hint="Ej: Pierna completa"
-            android:padding="14dp"
-            android:background="@android:drawable/edit_text" />
-
-        <!-- Días -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Días por semana"
-            android:textColor="#111111"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp" />
+            android:layout_marginTop="30dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="Nombre de la rutina"
+            android:inputType="text"
+            android:padding="14dp" />
 
         <EditText
-            android:id="@+id/etDias"
+            android:id="@+id/etDescripcionRutina"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="14dp"
+            android:background="@android:drawable/edit_text"
+            android:gravity="top"
+            android:hint="Descripción"
+            android:inputType="textMultiLine"
+            android:padding="14dp" />
+
+        <EditText
+            android:id="@+id/etDiasSemana"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:layout_marginTop="10dp"
-            android:hint="Ej: 4"
+            android:layout_marginTop="14dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="Días por semana"
             android:inputType="number"
-            android:padding="14dp"
-            android:background="@android:drawable/edit_text" />
-
-        <!-- Ejercicio -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ejercicio"
-            android:textColor="#111111"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp" />
+            android:padding="14dp" />
 
         <EditText
-            android:id="@+id/etEjercicio"
+            android:id="@+id/etObjetivoRutina"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:layout_marginTop="10dp"
-            android:hint="Ej: Sentadilla"
-            android:padding="14dp"
-            android:background="@android:drawable/edit_text" />
+            android:layout_marginTop="14dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="Objetivo"
+            android:inputType="text"
+            android:padding="14dp" />
 
-        <!-- Series -->
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Series"
-            android:textColor="#111111"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp" />
-
-        <EditText
-            android:id="@+id/etSeries"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginTop="10dp"
-            android:hint="Ej: 4"
-            android:inputType="number"
-            android:padding="14dp"
-            android:background="@android:drawable/edit_text" />
-
-        <!-- Repeticiones -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Repeticiones"
-            android:textColor="#111111"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp" />
-
-        <EditText
-            android:id="@+id/etRepeticiones"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginTop="10dp"
-            android:hint="Ej: 12"
-            android:inputType="number"
-            android:padding="14dp"
-            android:background="@android:drawable/edit_text" />
-
-        <!-- Peso -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Peso (kg)"
-            android:textColor="#111111"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp" />
-
-        <EditText
-            android:id="@+id/etPeso"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginTop="10dp"
-            android:hint="Ej: 60"
-            android:inputType="numberDecimal"
-            android:padding="14dp"
-            android:background="@android:drawable/edit_text" />
-
-        <!-- Botón añadir -->
-        <Button
-            android:id="@+id/btnAgregarEjercicio"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
             android:layout_marginTop="28dp"
-            android:text="Añadir ejercicio"
-            android:textAllCaps="false"
-            android:textSize="18sp"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#222222" />
+            android:text="Añadir ejercicios"
+            android:textColor="#111111"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
-        <!-- Botón guardar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <Spinner
+                android:id="@+id/spinnerEjercicios"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@android:drawable/edit_text"
+                android:padding="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etSeries"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_weight="1"
+                    android:background="@android:drawable/edit_text"
+                    android:hint="Series"
+                    android:inputType="number"
+                    android:padding="12dp" />
+
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="1dp" />
+
+                <EditText
+                    android:id="@+id/etRepeticiones"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_weight="1"
+                    android:background="@android:drawable/edit_text"
+                    android:hint="Reps"
+                    android:inputType="number"
+                    android:padding="12dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etPeso"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_weight="1"
+                    android:background="@android:drawable/edit_text"
+                    android:hint="Peso kg"
+                    android:inputType="numberDecimal"
+                    android:padding="12dp" />
+
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="1dp" />
+
+                <EditText
+                    android:id="@+id/etDescanso"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_weight="1"
+                    android:background="@android:drawable/edit_text"
+                    android:hint="Descanso s"
+                    android:inputType="number"
+                    android:padding="12dp" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnAnadirEjercicio"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#000000"
+                android:text="Añadir ejercicio"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtEjerciciosAnadidos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="Ejercicios añadidos"
+            android:textColor="#111111"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvEjerciciosSeleccionados"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginTop="15dp"
+            android:clipToPadding="false"
+            android:paddingBottom="10dp" />
+
         <Button
             android:id="@+id/btnGuardarRutina"
             android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:layout_marginTop="16dp"
+            android:layout_height="55dp"
+            android:layout_marginTop="28dp"
+            android:backgroundTint="#FF2D7A"
             android:text="Guardar rutina"
             android:textAllCaps="false"
-            android:textSize="18sp"
-            android:textStyle="bold"
             android:textColor="#FFFFFF"
-            android:backgroundTint="#FF2D7A"
-            android:layout_marginBottom="30dp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

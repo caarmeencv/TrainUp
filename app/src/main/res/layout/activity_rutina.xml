@@ -1,194 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:paddingStart="28dp"
+    android:paddingEnd="28dp"
+    android:paddingTop="32dp"
+    tools:context=".cliente.RutinaActivity">
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:text="Rutinas"
+        android:textColor="#111111"
+        android:textSize="32sp"
+        android:textStyle="bold" />
 
-        <!-- Título -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Rutinas"
-            android:textColor="#111111"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/txtSubtituloRutinas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="Descubre entrenamientos recomendados para ti"
+        android:textColor="#666666"
+        android:textSize="16sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Gestiona tus entrenamientos"
-            android:textColor="#777777"
-            android:textSize="16sp"
-            android:layout_marginTop="6dp" />
+    <Button
+        android:id="@+id/btnMisRutinas"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="#FF2D7A"
+        android:text="Mis rutinas"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
-        <!-- Botón crear rutina -->
-        <Button
-            android:id="@+id/btnCrearRutina"
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:layout_marginTop="24dp"
-            android:text="Crear nueva rutina"
-            android:textAllCaps="false"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#FF2D7A" />
+    <TextView
+        android:id="@+id/txtTituloSeccionRutinas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="Rutinas recomendadas"
+        android:textColor="#111111"
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
-        <!-- Mis rutinas -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Mis rutinas"
-            android:textColor="#111111"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginTop="30dp" />
+    <TextView
+        android:id="@+id/txtSinRutinas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:text="No hay rutinas recomendadas disponibles"
+        android:textColor="#777777"
+        android:textSize="15sp"
+        android:visibility="gone" />
 
-        <!-- Rutina 1 -->
-        <LinearLayout
-            android:id="@+id/cardRutina1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/bg_card"
-            android:padding="18dp"
-            android:layout_marginTop="16dp">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvRutinas"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="20dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pecho y Tríceps"
-                android:textColor="#111111"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="6 ejercicios · 45-60 min"
-                android:textColor="#666666"
-                android:textSize="15sp"
-                android:layout_marginTop="6dp" />
-
-            <ProgressBar
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:layout_marginTop="14dp"
-                android:progress="60"
-                style="?android:attr/progressBarStyleHorizontal" />
-
-            <Button
-                android:id="@+id/btnVerRutina1"
-                android:layout_width="wrap_content"
-                android:layout_height="45dp"
-                android:text="Ver rutina"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#FF2D7A"
-                android:layout_marginTop="14dp" />
-
-        </LinearLayout>
-
-        <!-- Rutina 2 -->
-        <LinearLayout
-            android:id="@+id/cardRutina2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/bg_card"
-            android:padding="18dp"
-            android:layout_marginTop="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Espalda y Bíceps"
-                android:textColor="#111111"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="5 ejercicios · 50 min"
-                android:textColor="#666666"
-                android:textSize="15sp"
-                android:layout_marginTop="6dp" />
-
-            <ProgressBar
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:layout_marginTop="14dp"
-                android:progress="35"
-                style="?android:attr/progressBarStyleHorizontal" />
-
-            <Button
-                android:id="@+id/btnVerRutina2"
-                android:layout_width="wrap_content"
-                android:layout_height="45dp"
-                android:text="Ver rutina"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#FF2D7A"
-                android:layout_marginTop="14dp" />
-
-        </LinearLayout>
-
-        <!-- Rutinas recomendadas -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Rutinas recomendadas"
-            android:textColor="#111111"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginTop="30dp" />
-
-        <!-- Recomendada -->
-        <LinearLayout
-            android:id="@+id/cardRecomendada"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/bg_rosa"
-            android:padding="20dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="30dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Rutina Full Body"
-                android:textColor="#FFFFFF"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ideal para principiantes"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:layout_marginTop="8dp" />
-
-            <Button
-                android:id="@+id/btnComenzar"
-                android:layout_width="wrap_content"
-                android:layout_height="45dp"
-                android:text="Comenzar"
-                android:textAllCaps="false"
-                android:textColor="#FF2D7A"
-                android:backgroundTint="#FFFFFF"
-                android:layout_marginTop="16dp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>

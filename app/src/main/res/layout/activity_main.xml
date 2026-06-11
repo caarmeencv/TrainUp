@@ -3,7 +3,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF7FB"
+    android:background="#FFFFFF"
     android:fillViewport="true">
 
     <LinearLayout
@@ -25,9 +25,10 @@
                 android:layout_height="52dp"
                 android:background="@drawable/bg_menu_pink"
                 android:gravity="center"
-                android:text="☰"
+                android:text="≡"
                 android:textColor="#111111"
-                android:textSize="34sp" />
+                android:textSize="34sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="0dp"
@@ -39,12 +40,14 @@
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <ImageView
                 android:layout_width="52dp"
                 android:layout_height="52dp"
-                android:gravity="center"
-                android:text="🔔"
-                android:textSize="28sp" />
+                android:background="@drawable/bg_menu_pink"
+                android:contentDescription="Logo TrainUp"
+                android:padding="8dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/logo_trainup" />
         </LinearLayout>
 
         <View
@@ -59,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
-            android:text="¡Hola! 👋"
+            android:text="¡Hola!"
             android:textColor="#111111"
             android:textSize="30sp"
             android:textStyle="bold" />
@@ -72,69 +75,8 @@
             android:textSize="18sp" />
 
         <!-- Tarjeta rutina -->
-        <LinearLayout
-            android:id="@+id/cardRutina"
-            android:layout_width="match_parent"
-            android:layout_height="210dp"
-            android:layout_marginTop="26dp"
-            android:background="@drawable/bg_pink_gradient"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:padding="24dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_tag_pink"
-                android:paddingStart="14dp"
-                android:paddingTop="7dp"
-                android:paddingEnd="14dp"
-                android:paddingBottom="7dp"
-                android:text="🔥 Rutina recomendada"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtRutinaNombre"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:text="Pierna y glúteo"
-                android:textColor="#FFFFFF"
-                android:textSize="32sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtRutinaInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="5 ejercicios · 45 min"
-                android:textColor="#FFFFFF"
-                android:textSize="19sp" />
-
-            <TextView
-                android:layout_width="150dp"
-                android:layout_height="48dp"
-                android:layout_marginTop="22dp"
-                android:background="@drawable/bg_button_white"
-                android:gravity="center"
-                android:text="Ver rutina  →"
-                android:textColor="#FF2D7A"
-                android:textSize="17sp"
-                android:textStyle="bold" />
-        </LinearLayout>
 
         <!-- Explora -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Explora"
-            android:textColor="#111111"
-            android:textSize="26sp"
-            android:textStyle="bold" />
 
         <!-- Rutinas y clases -->
         <LinearLayout
@@ -153,21 +95,14 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
                 android:orientation="vertical"
                 android:padding="18dp">
 
                 <TextView
-                    android:layout_width="58dp"
-                    android:layout_height="58dp"
-                    android:background="@drawable/bg_circle_strong_pink"
-                    android:gravity="center"
-                    android:text="🏋️"
-                    android:textSize="28sp" />
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
+                    android:layout_marginTop="20dp"
                     android:text="Rutinas"
                     android:textColor="#111111"
                     android:textSize="20sp"
@@ -191,21 +126,14 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
                 android:orientation="vertical"
                 android:padding="18dp">
 
                 <TextView
-                    android:layout_width="58dp"
-                    android:layout_height="58dp"
-                    android:background="@drawable/bg_circle_strong_pink"
-                    android:gravity="center"
-                    android:text="📅"
-                    android:textSize="28sp" />
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
+                    android:layout_marginTop="20dp"
                     android:text="Clases"
                     android:textColor="#111111"
                     android:textSize="20sp"
@@ -234,14 +162,6 @@
             android:orientation="horizontal"
             android:padding="20dp">
 
-            <TextView
-                android:layout_width="62dp"
-                android:layout_height="62dp"
-                android:background="@drawable/bg_circle_strong_pink"
-                android:gravity="center"
-                android:text="🏢"
-                android:textSize="30sp" />
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -252,27 +172,21 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Mi gimnasio"
+                    android:text="Información de gimnasio"
                     android:textColor="#111111"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Información, horarios y contacto"
-                    android:textColor="#666666"
-                    android:textSize="15sp" />
             </LinearLayout>
 
             <TextView
-                android:layout_width="42dp"
+                android:layout_width="78dp"
                 android:layout_height="42dp"
                 android:background="@drawable/bg_button_white"
                 android:gravity="center"
-                android:text="→"
+                android:text="Abrir"
                 android:textColor="#FF2D7A"
-                android:textSize="24sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -288,7 +202,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="105dp"
+            android:layout_height="wrap_content"
+            android:minHeight="120dp"
             android:layout_marginTop="14dp"
             android:layout_marginBottom="28dp"
             android:background="@drawable/bg_card_white"
@@ -296,56 +211,60 @@
             android:orientation="horizontal"
             android:padding="18dp">
 
-            <TextView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/bg_circle_light_pink"
-                android:gravity="center"
-                android:text="🧘"
-                android:textSize="30sp" />
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="18dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/txtClaseNombre"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:text="Yoga"
                     android:textColor="#111111"
-                    android:textSize="21sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtClaseGimnasio"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:text="Mi gimnasio"
                     android:textColor="#666666"
                     android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/txtClaseHorario"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     android:text="Hoy, 18:00 · Sala 2"
                     android:textColor="#666666"
                     android:textSize="14sp" />
             </LinearLayout>
 
             <TextView
-                android:layout_width="105dp"
+                android:id="@+id/btnVerClases"
+                android:layout_width="95dp"
                 android:layout_height="46dp"
+                android:layout_marginStart="12dp"
                 android:background="@drawable/bg_button_pink"
                 android:gravity="center"
-                android:text="Ver clases"
+                android:text="Reservas"
                 android:textColor="#FFFFFF"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true" />
+
         </LinearLayout>
 
     </LinearLayout>

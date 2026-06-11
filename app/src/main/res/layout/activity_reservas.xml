@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mis reservas"
+        android:textColor="#111111"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Consulta las clases que tienes reservadas"
+        android:textColor="#777777"
+        android:textSize="16sp"
+        android:layout_marginTop="6dp" />
+
+    <TextView
+        android:id="@+id/txtSinReservas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No tienes reservas todavía"
+        android:textColor="#777777"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="30dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvReservas"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="24dp" />
+
+</LinearLayout>

@@ -9,7 +9,7 @@
     android:paddingStart="32dp"
     android:paddingEnd="32dp"
     android:paddingTop="40dp"
-    tools:context=".PlanActivity">
+    tools:context=".cliente.PlanActivity">
 
     <ImageView
         android:id="@+id/imgLogo"
