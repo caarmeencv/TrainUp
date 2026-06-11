@@ -13,6 +13,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.carmen.trainup.R;
+import com.carmen.trainup.admin.AdminMainActivity;
+import com.carmen.trainup.cliente.GymListActivity;
 import com.carmen.trainup.cliente.MainActivity;
 
 public class OnBoardingActivity extends AppCompatActivity {
@@ -32,13 +34,27 @@ public class OnBoardingActivity extends AppCompatActivity {
         });
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
+
             SharedPreferences preferences = getSharedPreferences("TrainUpPrefs", MODE_PRIVATE);
+
             boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
+            String rol = preferences.getString("rol", "cliente");
+            int idGimnasio = preferences.getInt("id_gimnasio", -1);
 
             Intent intent;
 
             if (isLoggedIn) {
-                intent = new Intent(OnBoardingActivity.this, MainActivity.class);
+
+                if (rol.equalsIgnoreCase("administrador")) {
+                    intent = new Intent(OnBoardingActivity.this, AdminMainActivity.class);
+                } else {
+                    if (idGimnasio != -1) {
+                        intent = new Intent(OnBoardingActivity.this, MainActivity.class);
+                    } else {
+                        intent = new Intent(OnBoardingActivity.this, GymListActivity.class);
+                    }
+                }
+
             } else {
                 intent = new Intent(OnBoardingActivity.this, LoginActivity.class);
             }

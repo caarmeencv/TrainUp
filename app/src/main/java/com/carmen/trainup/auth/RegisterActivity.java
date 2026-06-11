@@ -14,8 +14,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.carmen.trainup.R;
-import com.carmen.trainup.utils.SupabaseConfig;
 import com.carmen.trainup.cliente.GymListActivity;
+import com.carmen.trainup.utils.SupabaseConfig;
 
 import org.json.JSONObject;
 
@@ -40,6 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private String nombre, apellidos, telefono, fechaNacimiento, genero, email, password;
     private String accessToken = "";
+    private String authId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,9 +164,9 @@ public class RegisterActivity extends AppCompatActivity {
                         try {
                             JSONObject jsonRespuesta = new JSONObject(respuesta);
 
-                            accessToken = jsonRespuesta.getString("access_token");
-
-                            String authId = "";
+                            if (jsonRespuesta.has("access_token") && !jsonRespuesta.isNull("access_token")) {
+                                accessToken = jsonRespuesta.getString("access_token");
+                            }
 
                             if (jsonRespuesta.has("user") && !jsonRespuesta.isNull("user")) {
                                 JSONObject user = jsonRespuesta.getJSONObject("user");
@@ -174,13 +175,19 @@ public class RegisterActivity extends AppCompatActivity {
                                 authId = jsonRespuesta.getString("id");
                             }
 
+                            if (accessToken.isEmpty()) {
+                                runOnUiThread(() ->
+                                        Toast.makeText(RegisterActivity.this, "No se recibió token de acceso", Toast.LENGTH_LONG).show());
+                                return;
+                            }
+
                             if (authId.isEmpty()) {
                                 runOnUiThread(() ->
                                         Toast.makeText(RegisterActivity.this, "No se recibió ID del usuario", Toast.LENGTH_LONG).show());
                                 return;
                             }
 
-                            insertarUsuarioTabla(authId);
+                            insertarUsuarioTabla();
 
                         } catch (Exception e) {
                             runOnUiThread(() ->
@@ -198,7 +205,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    private void insertarUsuarioTabla(String authId) {
+    private void insertarUsuarioTabla() {
         try {
             JSONObject json = new JSONObject();
 
@@ -228,7 +235,7 @@ public class RegisterActivity extends AppCompatActivity {
                     .addHeader("apikey", SupabaseConfig.SUPABASE_API_KEY)
                     .addHeader("Authorization", "Bearer " + accessToken)
                     .addHeader("Content-Type", "application/json")
-                    .addHeader("Prefer", "return=minimal")
+                    .addHeader("Prefer", "return=representation")
                     .post(body)
                     .build();
 
@@ -249,12 +256,16 @@ public class RegisterActivity extends AppCompatActivity {
 
                     if (response.isSuccessful()) {
                         runOnUiThread(() -> {
+
                             SharedPreferences prefs = getSharedPreferences("TrainUpPrefs", MODE_PRIVATE);
 
                             prefs.edit()
+                                    .putBoolean("isLoggedIn", true)
                                     .putString("access_token", accessToken)
                                     .putString("email", email)
+                                    .putString("auth_id", authId)
                                     .putString("rol", "cliente")
+                                    .remove("id_gimnasio")
                                     .apply();
 
                             Toast.makeText(RegisterActivity.this, "Usuario registrado correctamente", Toast.LENGTH_LONG).show();

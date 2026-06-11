@@ -10,11 +10,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.carmen.trainup.cliente.MainActivity;
 import com.carmen.trainup.R;
-import com.carmen.trainup.utils.SupabaseConfig;
 import com.carmen.trainup.admin.AdminMainActivity;
 import com.carmen.trainup.cliente.GymListActivity;
+import com.carmen.trainup.cliente.MainActivity;
+import com.carmen.trainup.utils.SupabaseConfig;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -100,7 +100,6 @@ public class LoginActivity extends AppCompatActivity {
                             accessToken = jsonRespuesta.getString("access_token");
 
                             JSONObject user = jsonRespuesta.getJSONObject("user");
-
                             emailUsuario = user.getString("email");
                             authId = user.getString("id");
 
@@ -190,8 +189,10 @@ public class LoginActivity extends AppCompatActivity {
             SharedPreferences prefs = getSharedPreferences("TrainUpPrefs", MODE_PRIVATE);
 
             SharedPreferences.Editor editor = prefs.edit()
+                    .putBoolean("isLoggedIn", true)
                     .putString("access_token", accessToken)
                     .putString("email", emailUsuario)
+                    .putString("auth_id", authId)
                     .putString("rol", rol)
                     .putInt("id_usuario", idUsuario);
 
