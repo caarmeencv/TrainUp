@@ -15,10 +15,10 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.carmen.trainup.adapters.PlanAdapter;
 import com.carmen.trainup.R;
-import com.carmen.trainup.utils.SupabaseConfig;
+import com.carmen.trainup.adapters.PlanAdapter;
 import com.carmen.trainup.models.Plan;
+import com.carmen.trainup.utils.SupabaseConfig;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,8 +42,9 @@ public class PlanActivity extends AppCompatActivity {
     private final OkHttpClient client = new OkHttpClient();
 
     private int idGimnasio;
-    private int idUsuario;
+    private long idUsuario;
     private String nombreGimnasio;
+    private String accessToken;
 
     private static final MediaType JSON =
             MediaType.get("application/json; charset=utf-8");
@@ -63,11 +64,26 @@ public class PlanActivity extends AppCompatActivity {
         rvPlanes = findViewById(R.id.rvPlanes);
         txtNombreGimnasioPlan = findViewById(R.id.txtNombreGimnasioPlan);
 
+        SharedPreferences prefs = getSharedPreferences("TrainUpPrefs", MODE_PRIVATE);
+
+        accessToken = prefs.getString("access_token", "");
+        idUsuario = leerLongPrefs(prefs, "id_usuario", -1);
+
         idGimnasio = getIntent().getIntExtra("id_gimnasio", -1);
         nombreGimnasio = getIntent().getStringExtra("nombre_gimnasio");
 
-        SharedPreferences prefs = getSharedPreferences("TrainUpPrefs", MODE_PRIVATE);
-        idUsuario = prefs.getInt("id_usuario", -1);
+        Log.d("PLAN", "ID Usuario: " + idUsuario);
+        Log.d("PLAN", "ID Gimnasio: " + idGimnasio);
+
+        if (idGimnasio == -1) {
+            Toast.makeText(this, "No se encontró el gimnasio", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        if (nombreGimnasio == null || nombreGimnasio.isEmpty()) {
+            nombreGimnasio = "este gimnasio";
+        }
 
         txtNombreGimnasioPlan.setText("Planes disponibles de " + nombreGimnasio);
 
@@ -78,6 +94,14 @@ public class PlanActivity extends AppCompatActivity {
         rvPlanes.setAdapter(planAdapter);
 
         cargarPlanes();
+    }
+
+    private long leerLongPrefs(SharedPreferences prefs, String clave, long valorDefecto) {
+        try {
+            return prefs.getLong(clave, valorDefecto);
+        } catch (ClassCastException e) {
+            return prefs.getInt(clave, (int) valorDefecto);
+        }
     }
 
     private void cargarPlanes() {
@@ -108,6 +132,9 @@ public class PlanActivity extends AppCompatActivity {
 
                 String respuesta = response.body() != null ? response.body().string() : "";
 
+                Log.d("PLANES", "Código: " + response.code());
+                Log.d("PLANES", "Respuesta: " + respuesta);
+
                 if (response.isSuccessful()) {
                     try {
                         JSONArray array = new JSONArray(respuesta);
@@ -129,6 +156,10 @@ public class PlanActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         Log.e("PLAN_ERROR", "Error leyendo JSON", e);
                     }
+                } else {
+                    runOnUiThread(() ->
+                            Toast.makeText(PlanActivity.this, "Error Supabase: " + response.code(), Toast.LENGTH_LONG).show()
+                    );
                 }
             }
         });
@@ -167,12 +198,22 @@ public class PlanActivity extends AppCompatActivity {
                 String respuesta = response.body() != null ? response.body().string() : "";
 
                 Log.d("UPDATE_PLAN", "ID Usuario: " + idUsuario);
+                Log.d("UPDATE_PLAN", "ID Gimnasio: " + idGimnasio);
+                Log.d("UPDATE_PLAN", "ID Plan: " + idPlan);
                 Log.d("UPDATE_PLAN", "JSON: " + json.toString());
                 Log.d("UPDATE_PLAN", "Código: " + response.code());
                 Log.d("UPDATE_PLAN", "Respuesta: " + respuesta);
 
                 if (response.isSuccessful() && !respuesta.equals("[]")) {
                     runOnUiThread(() -> {
+
+                        SharedPreferences prefs = getSharedPreferences("TrainUpPrefs", MODE_PRIVATE);
+
+                        prefs.edit()
+                                .putInt("id_gimnasio", idGimnasio)
+                                .putInt("id_plan", idPlan)
+                                .apply();
+
                         Toast.makeText(this, "Plan guardado", Toast.LENGTH_SHORT).show();
 
                         Intent intent = new Intent(PlanActivity.this, MainActivity.class);

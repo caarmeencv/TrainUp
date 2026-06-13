@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,22 +40,28 @@ public class OnBoardingActivity extends AppCompatActivity {
 
             boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
             String rol = preferences.getString("rol", "cliente");
+            long idUsuario = leerLongPrefs(preferences, "id_usuario", -1);
             int idGimnasio = preferences.getInt("id_gimnasio", -1);
+            int idPlan = preferences.getInt("id_plan", -1);
+
+            Log.d("ONBOARDING", "isLoggedIn: " + isLoggedIn);
+            Log.d("ONBOARDING", "rol: " + rol);
+            Log.d("ONBOARDING", "idUsuario: " + idUsuario);
+            Log.d("ONBOARDING", "idGimnasio: " + idGimnasio);
+            Log.d("ONBOARDING", "idPlan: " + idPlan);
 
             Intent intent;
 
             if (isLoggedIn) {
-
                 if (rol.equalsIgnoreCase("administrador")) {
                     intent = new Intent(OnBoardingActivity.this, AdminMainActivity.class);
                 } else {
-                    if (idGimnasio != -1) {
+                    if (idUsuario != -1 && idGimnasio != -1 && idPlan != -1) {
                         intent = new Intent(OnBoardingActivity.this, MainActivity.class);
                     } else {
                         intent = new Intent(OnBoardingActivity.this, GymListActivity.class);
                     }
                 }
-
             } else {
                 intent = new Intent(OnBoardingActivity.this, LoginActivity.class);
             }
@@ -63,5 +70,13 @@ public class OnBoardingActivity extends AppCompatActivity {
             finish();
 
         }, SPLASH_TIME);
+    }
+
+    private long leerLongPrefs(SharedPreferences prefs, String clave, long valorDefecto) {
+        try {
+            return prefs.getLong(clave, valorDefecto);
+        } catch (ClassCastException e) {
+            return prefs.getInt(clave, (int) valorDefecto);
+        }
     }
 }

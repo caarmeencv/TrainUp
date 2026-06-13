@@ -86,7 +86,18 @@
             android:clickable="true"
             android:focusable="false"
             android:hint="Fecha de nacimiento"
+            android:inputType="none"
             android:padding="14dp" />
+
+        <TextView
+            android:id="@+id/txtErrorFecha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#D32F2F"
+            android:textSize="12sp"
+            android:visibility="gone"
+            android:paddingStart="4dp"
+            android:layout_marginTop="4dp" />
 
         <Spinner
             android:id="@+id/spGenero"
@@ -95,6 +106,17 @@
             android:layout_marginTop="18dp"
             android:background="@android:drawable/edit_text"
             android:entries="@array/generos" />
+
+        <TextView
+            android:id="@+id/txtErrorGenero"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Selecciona un género"
+            android:textColor="#D32F2F"
+            android:textSize="12sp"
+            android:visibility="gone"
+            android:paddingStart="4dp"
+            android:layout_marginTop="4dp" />
 
         <EditText
             android:id="@+id/etEmail"

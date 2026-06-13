@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -43,7 +45,13 @@ public class InfoActivity2 extends AppCompatActivity {
 
     private String accessToken;
     private int idGimnasio;
-    private int idUsuario;
+    private long idUsuario;
+
+    private String direccionGimnasio = "";
+    private String emailGimnasio = "";
+    private String telefonoGimnasio = "";
+    private String nombreGimnasio = "";
+    private String ciudadGimnasio = "";
 
     private static final MediaType JSON =
             MediaType.get("application/json; charset=utf-8");
@@ -56,7 +64,7 @@ public class InfoActivity2 extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("TrainUpPrefs", MODE_PRIVATE);
 
         accessToken = prefs.getString("access_token", "");
-        idUsuario = prefs.getInt("id_usuario", -1);
+        idUsuario = leerLongPrefs(prefs, "id_usuario", -1);
 
         idGimnasio = getIntent().getIntExtra("id_gimnasio", -1);
 
@@ -73,6 +81,13 @@ public class InfoActivity2 extends AppCompatActivity {
         txtTelefonoGimnasioInfo = findViewById(R.id.txtTelefonoGimnasioInfo);
         btnDarseDeBaja = findViewById(R.id.btnDarseDeBaja);
 
+        txtDireccionGimnasioInfo.setOnClickListener(v -> abrirGoogleMaps());
+        txtEmailGimnasioInfo.setOnClickListener(v -> abrirEmail());
+        txtTelefonoGimnasioInfo.setOnClickListener(v -> abrirTelefono());
+
+        Log.d("INFO_GYM", "ID Usuario: " + idUsuario);
+        Log.d("INFO_GYM", "ID Gimnasio: " + idGimnasio);
+
         if (idGimnasio == -1) {
             Toast.makeText(this, "No se encontró el gimnasio del usuario", Toast.LENGTH_LONG).show();
             return;
@@ -81,6 +96,76 @@ public class InfoActivity2 extends AppCompatActivity {
         cargarDatosGimnasio();
 
         btnDarseDeBaja.setOnClickListener(v -> mostrarDialogoBaja());
+    }
+
+    private long leerLongPrefs(SharedPreferences prefs, String clave, long valorDefecto) {
+        try {
+            return prefs.getLong(clave, valorDefecto);
+        } catch (ClassCastException e) {
+            return prefs.getInt(clave, (int) valorDefecto);
+        }
+    }
+
+    private void abrirGoogleMaps() {
+        if (direccionGimnasio.isEmpty() || direccionGimnasio.equalsIgnoreCase("Sin dirección")) {
+            Toast.makeText(this, "No hay dirección disponible", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            String busqueda = direccionGimnasio + " " + ciudadGimnasio;
+            String direccionCodificada = URLEncoder.encode(busqueda, "UTF-8");
+
+            Uri uri = Uri.parse("geo:0,0?q=" + direccionCodificada);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            intent.setPackage("com.google.android.apps.maps");
+
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(intent);
+            } else {
+                Intent navegador = new Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://www.google.com/maps/search/?api=1&query=" + direccionCodificada)
+                );
+                startActivity(navegador);
+            }
+
+        } catch (Exception e) {
+            Toast.makeText(this, "No se pudo abrir Google Maps", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void abrirEmail() {
+        if (emailGimnasio.isEmpty() || emailGimnasio.equalsIgnoreCase("Sin email")) {
+            Toast.makeText(this, "No hay email disponible", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:" + emailGimnasio));
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Consulta sobre " + nombreGimnasio);
+
+        try {
+            startActivity(Intent.createChooser(intent, "Enviar correo"));
+        } catch (Exception e) {
+            Toast.makeText(this, "No se encontró una app de correo", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void abrirTelefono() {
+        if (telefonoGimnasio.isEmpty() || telefonoGimnasio.equalsIgnoreCase("Sin teléfono")) {
+            Toast.makeText(this, "No hay teléfono disponible", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + telefonoGimnasio));
+
+        try {
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "No se pudo abrir la app de teléfono", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void mostrarDialogoBaja() {
@@ -104,12 +189,14 @@ public class InfoActivity2 extends AppCompatActivity {
                         .addHeader("apikey", SupabaseConfig.SUPABASE_API_KEY)
                         .addHeader("Authorization", "Bearer " + accessToken)
                         .addHeader("Accept", "application/json")
+                        .get()
                         .build();
 
                 Response response = client.newCall(request).execute();
 
                 String body = response.body() != null ? response.body().string() : "";
-                Log.d("INFO_GYM", body);
+                Log.d("INFO_GYM", "Código: " + response.code());
+                Log.d("INFO_GYM", "Respuesta: " + body);
 
                 if (!response.isSuccessful()) {
                     runOnUiThread(() ->
@@ -127,25 +214,27 @@ public class InfoActivity2 extends AppCompatActivity {
 
                 JSONObject gimnasio = array.getJSONObject(0);
 
-                String nombre = gimnasio.optString("Nombre_Gimnasio", "Sin nombre");
-                String ciudad = gimnasio.optString("Ciudad", "Sin ciudad");
+                nombreGimnasio = gimnasio.optString("Nombre_Gimnasio", "Sin nombre");
+                ciudadGimnasio = gimnasio.optString("Ciudad", "Sin ciudad");
                 String descripcion = gimnasio.optString("Descripcion", "Sin descripción");
-                String direccion = gimnasio.optString("Direccion", "Sin dirección");
-                String email = gimnasio.optString("Email", "Sin email");
-                String telefono = gimnasio.optString("Telefono", "Sin teléfono");
+                direccionGimnasio = gimnasio.optString("Direccion", "Sin dirección");
+                emailGimnasio = gimnasio.optString("Email", "Sin email");
+                telefonoGimnasio = gimnasio.optString("Telefono", "Sin teléfono");
                 String imagen = gimnasio.optString("Imagen_Gimnasio", "");
 
                 runOnUiThread(() -> {
-                    txtNombreGimnasioInfo.setText(nombre);
-                    txtCiudadGimnasioInfo.setText(ciudad);
+                    txtNombreGimnasioInfo.setText(nombreGimnasio);
+                    txtCiudadGimnasioInfo.setText(ciudadGimnasio);
                     txtDescripcionGimnasioInfo.setText(descripcion);
-                    txtDireccionGimnasioInfo.setText("Dirección: " + direccion);
-                    txtEmailGimnasioInfo.setText("Email: " + email);
-                    txtTelefonoGimnasioInfo.setText("Teléfono: " + telefono);
+                    txtDireccionGimnasioInfo.setText("Dirección: " + direccionGimnasio);
+                    txtEmailGimnasioInfo.setText("Email: " + emailGimnasio);
+                    txtTelefonoGimnasioInfo.setText("Teléfono: " + telefonoGimnasio);
                 });
 
-                if (!imagen.isEmpty()) {
+                if (!imagen.isEmpty() && !imagen.equals("null")) {
                     cargarImagen(imagen);
+                } else {
+                    runOnUiThread(() -> imgGimnasioInfo.setImageResource(R.drawable.logo_trainup));
                 }
 
             } catch (Exception e) {
@@ -185,6 +274,8 @@ public class InfoActivity2 extends AppCompatActivity {
 
                 Response response = client.newCall(request).execute();
 
+                Log.d("BAJA_GYM", "Código: " + response.code());
+
                 if (!response.isSuccessful()) {
                     runOnUiThread(() ->
                             Toast.makeText(this, "Error al darse de baja", Toast.LENGTH_LONG).show());
@@ -194,6 +285,7 @@ public class InfoActivity2 extends AppCompatActivity {
                 getSharedPreferences("TrainUpPrefs", MODE_PRIVATE)
                         .edit()
                         .remove("id_gimnasio")
+                        .remove("id_plan")
                         .apply();
 
                 runOnUiThread(() -> {
@@ -206,6 +298,7 @@ public class InfoActivity2 extends AppCompatActivity {
                 });
 
             } catch (Exception e) {
+                Log.e("BAJA_GYM", "Error", e);
                 runOnUiThread(() ->
                         Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
             }
@@ -225,6 +318,7 @@ public class InfoActivity2 extends AppCompatActivity {
                 runOnUiThread(() -> imgGimnasioInfo.setImageBitmap(bitmap));
 
             } catch (Exception e) {
+                Log.e("INFO_GYM_IMG", "Error cargando imagen", e);
                 runOnUiThread(() ->
                         imgGimnasioInfo.setImageResource(R.drawable.logo_trainup));
             }

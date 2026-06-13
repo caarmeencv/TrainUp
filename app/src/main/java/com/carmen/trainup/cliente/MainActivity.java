@@ -1,12 +1,10 @@
 package com.carmen.trainup.cliente;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -16,7 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.carmen.trainup.R;
-import com.carmen.trainup.auth.LoginActivity;
+import com.carmen.trainup.utils.MenuHelper;
 import com.carmen.trainup.utils.SupabaseConfig;
 
 import org.json.JSONArray;
@@ -74,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         btnClases = findViewById(R.id.btnClases);
         btnGimnasios = findViewById(R.id.btnGimnasios);
 
+        MenuHelper.configurarMenu(this, btnMenu);
+
         txtSaludo.setText("¡Hola!");
         txtClaseNombre.setText("Cargando...");
         txtClaseGimnasio.setText("");
@@ -83,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
         btnClases.setOnClickListener(v -> abrirClases());
         btnGimnasios.setOnClickListener(v -> abrirInfoGimnasio());
         btnVerClases.setOnClickListener(v -> abrirReservas());
-
-        btnMenu.setOnClickListener(v -> mostrarMenu());
 
         cargarUsuario();
     }
@@ -101,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 String emailEncoded = URLEncoder.encode(emailUsuario, "UTF-8");
 
                 String url = SupabaseConfig.SUPABASE_URL +
-                        "/rest/v1/Usuario?select=ID_Usuario&Email_Usuario=eq." + emailEncoded;
+                        "/rest/v1/Usuario?select=ID_Usuario,Nombre_Usuario,ID_Gimnasio&Email_Usuario=eq." + emailEncoded;
 
                 Request request = new Request.Builder()
                         .url(url)
@@ -123,8 +121,19 @@ public class MainActivity extends AppCompatActivity {
                 JSONArray usuarios = new JSONArray(body);
 
                 if (usuarios.length() > 0) {
-                    idUsuario = usuarios.getJSONObject(0).getLong("ID_Usuario");
+                    JSONObject usuario = usuarios.getJSONObject(0);
+
+                    idUsuario = usuario.getLong("ID_Usuario");
+                    idGimnasio = usuario.optInt("ID_Gimnasio", idGimnasio);
+
+                    getSharedPreferences("TrainUpPrefs", MODE_PRIVATE)
+                            .edit()
+                            .putInt("id_usuario", (int) idUsuario)
+                            .putInt("id_gimnasio", idGimnasio)
+                            .apply();
+
                     cargarProximaReserva();
+
                 } else {
                     mostrarError("Sin usuario", "No se encontró el usuario");
                 }
@@ -275,41 +284,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void mostrarMenu() {
-        PopupMenu popupMenu = new PopupMenu(MainActivity.this, btnMenu);
-
-        popupMenu.getMenu().add("Rutinas");
-        popupMenu.getMenu().add("Clases");
-        popupMenu.getMenu().add("Mis reservas");
-        popupMenu.getMenu().add("Información de gimnasio");
-        popupMenu.getMenu().add("Ajustes");
-        popupMenu.getMenu().add("Cerrar sesión");
-
-        popupMenu.setOnMenuItemClickListener(item -> {
-            String opcion = item.getTitle().toString();
-
-            if (opcion.equals("Rutinas")) abrirRutinas();
-            else if (opcion.equals("Clases")) abrirClases();
-            else if (opcion.equals("Mis reservas")) abrirReservas();
-            else if (opcion.equals("Información de gimnasio")) abrirInfoGimnasio();
-            else if (opcion.equals("Ajustes")) abrirAjustes();
-            else if (opcion.equals("Cerrar sesión")) mostrarDialogoCerrarSesion();
-
-            return true;
-        });
-
-        popupMenu.show();
-    }
-
-    private void mostrarDialogoCerrarSesion() {
-        new AlertDialog.Builder(MainActivity.this)
-                .setTitle("Cerrar sesión")
-                .setMessage("¿Seguro que quieres cerrar sesión?")
-                .setPositiveButton("Sí, cerrar sesión", (dialog, which) -> cerrarSesion())
-                .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss())
-                .show();
-    }
-
     private void abrirRutinas() {
         startActivity(new Intent(MainActivity.this, RutinaActivity.class));
     }
@@ -326,19 +300,5 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, InfoActivity2.class);
         intent.putExtra("id_gimnasio", idGimnasio);
         startActivity(intent);
-    }
-
-    private void abrirAjustes() {
-        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
-    }
-
-    private void cerrarSesion() {
-        SharedPreferences prefs = getSharedPreferences("TrainUpPrefs", MODE_PRIVATE);
-        prefs.edit().clear().apply();
-
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
     }
 }

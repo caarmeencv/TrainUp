@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -31,7 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText etNombre, etApellidos, etTelefono, etFechaNacimiento, etEmail, etPassword, etConfirmPassword;
     private Spinner spGenero;
     private Button btnRegister;
-    private TextView txtLogin;
+    private TextView txtLogin, txtErrorFecha, txtErrorGenero;
 
     private final OkHttpClient client = new OkHttpClient();
 
@@ -57,8 +58,13 @@ public class RegisterActivity extends AppCompatActivity {
         spGenero = findViewById(R.id.spGenero);
         btnRegister = findViewById(R.id.btnRegister);
         txtLogin = findViewById(R.id.txtLogin);
+        txtErrorFecha = findViewById(R.id.txtErrorFecha);
+        txtErrorGenero = findViewById(R.id.txtErrorGenero);
 
+        etFechaNacimiento.setFocusable(false);
+        etFechaNacimiento.setClickable(true);
         etFechaNacimiento.setOnClickListener(v -> abrirCalendario());
+
         btnRegister.setOnClickListener(v -> registrarUsuario());
 
         txtLogin.setOnClickListener(v -> {
@@ -77,8 +83,13 @@ public class RegisterActivity extends AppCompatActivity {
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
                 (view, year, month, dayOfMonth) -> {
-                    String fecha = dayOfMonth + "/" + (month + 1) + "/" + year;
+                    String fecha = year + "-"
+                            + String.format("%02d", month + 1)
+                            + "-"
+                            + String.format("%02d", dayOfMonth);
+
                     etFechaNacimiento.setText(fecha);
+                    txtErrorFecha.setVisibility(View.GONE);
                 },
                 anio,
                 mes,
@@ -98,35 +109,103 @@ public class RegisterActivity extends AppCompatActivity {
         password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-        if (nombre.isEmpty() || apellidos.isEmpty() || telefono.isEmpty()
-                || fechaNacimiento.isEmpty() || email.isEmpty()
-                || password.isEmpty() || confirmPassword.isEmpty()) {
+        limpiarErrores();
 
-            Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show();
-            return;
+        boolean hayErrores = false;
+
+        if (nombre.isEmpty()) {
+            etNombre.setError("Introduce tu nombre");
+            hayErrores = true;
         }
 
-        if (genero.equals("Selecciona género")) {
-            Toast.makeText(this, "Selecciona un género", Toast.LENGTH_SHORT).show();
-            return;
+        if (apellidos.isEmpty()) {
+            etApellidos.setError("Introduce tus apellidos");
+            hayErrores = true;
         }
 
-        if (!email.contains("@")) {
-            etEmail.setError("Correo no válido");
-            return;
+        if (telefono.isEmpty()) {
+            etTelefono.setError("Introduce tu teléfono");
+            hayErrores = true;
         }
 
-        if (password.length() < 6) {
-            etPassword.setError("La contraseña debe tener al menos 6 caracteres");
-            return;
+        if (fechaNacimiento.isEmpty()) {
+            txtErrorFecha.setText("Selecciona tu fecha de nacimiento");
+            txtErrorFecha.setVisibility(View.VISIBLE);
+            hayErrores = true;
+        } else if (!esMayorDe16(fechaNacimiento)) {
+            txtErrorFecha.setText("Debes tener al menos 16 años");
+            txtErrorFecha.setVisibility(View.VISIBLE);
+            hayErrores = true;
         }
 
-        if (!password.equals(confirmPassword)) {
+        if (genero.toLowerCase().contains("selecciona")) {
+            txtErrorGenero.setText("Selecciona un género");
+            txtErrorGenero.setVisibility(View.VISIBLE);
+            hayErrores = true;
+        }
+
+        if (email.isEmpty()) {
+            etEmail.setError("Introduce tu email");
+            hayErrores = true;
+        } else if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            etEmail.setError("Formato: usuario@dominio.com");
+            hayErrores = true;
+        }
+
+        if (password.isEmpty()) {
+            etPassword.setError("Introduce una contraseña");
+            hayErrores = true;
+        } else if (!password.matches("^(?=.*[A-Za-z])(?=.*\\d).{6,}$")) {
+            etPassword.setError("Mínimo 6 caracteres con letras y números");
+            hayErrores = true;
+        }
+
+        if (confirmPassword.isEmpty()) {
+            etConfirmPassword.setError("Confirma la contraseña");
+            hayErrores = true;
+        } else if (!password.equals(confirmPassword)) {
             etConfirmPassword.setError("Las contraseñas no coinciden");
+            hayErrores = true;
+        }
+
+        if (hayErrores) {
             return;
         }
 
         crearUsuarioAuth();
+    }
+
+    private void limpiarErrores() {
+        etNombre.setError(null);
+        etApellidos.setError(null);
+        etTelefono.setError(null);
+        etEmail.setError(null);
+        etPassword.setError(null);
+        etConfirmPassword.setError(null);
+
+        txtErrorFecha.setVisibility(View.GONE);
+        txtErrorGenero.setVisibility(View.GONE);
+    }
+
+    private boolean esMayorDe16(String fecha) {
+        try {
+            String[] partes = fecha.split("-");
+
+            int year = Integer.parseInt(partes[0]);
+            int month = Integer.parseInt(partes[1]) - 1;
+            int day = Integer.parseInt(partes[2]);
+
+            Calendar nacimiento = Calendar.getInstance();
+            nacimiento.set(year, month, day);
+
+            Calendar limite = Calendar.getInstance();
+            limite.add(Calendar.YEAR, -16);
+
+            return !nacimiento.after(limite);
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private void crearUsuarioAuth() {
@@ -150,7 +229,8 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(okhttp3.Call call, java.io.IOException e) {
                     runOnUiThread(() ->
-                            Toast.makeText(RegisterActivity.this, "Error de conexión: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                            Toast.makeText(RegisterActivity.this, "Error de conexión: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                    );
                 }
 
                 @Override
@@ -177,13 +257,15 @@ public class RegisterActivity extends AppCompatActivity {
 
                             if (accessToken.isEmpty()) {
                                 runOnUiThread(() ->
-                                        Toast.makeText(RegisterActivity.this, "No se recibió token de acceso", Toast.LENGTH_LONG).show());
+                                        Toast.makeText(RegisterActivity.this, "No se recibió token de acceso", Toast.LENGTH_LONG).show()
+                                );
                                 return;
                             }
 
                             if (authId.isEmpty()) {
                                 runOnUiThread(() ->
-                                        Toast.makeText(RegisterActivity.this, "No se recibió ID del usuario", Toast.LENGTH_LONG).show());
+                                        Toast.makeText(RegisterActivity.this, "No se recibió ID del usuario", Toast.LENGTH_LONG).show()
+                                );
                                 return;
                             }
 
@@ -191,11 +273,13 @@ public class RegisterActivity extends AppCompatActivity {
 
                         } catch (Exception e) {
                             runOnUiThread(() ->
-                                    Toast.makeText(RegisterActivity.this, "Error leyendo Auth: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                                    Toast.makeText(RegisterActivity.this, "Error leyendo Auth: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                            );
                         }
                     } else {
                         runOnUiThread(() ->
-                                Toast.makeText(RegisterActivity.this, "Error registro: " + respuesta, Toast.LENGTH_LONG).show());
+                                Toast.makeText(RegisterActivity.this, "Error registro: " + respuesta, Toast.LENGTH_LONG).show()
+                        );
                     }
                 }
             });
@@ -216,17 +300,7 @@ public class RegisterActivity extends AppCompatActivity {
             json.put("Rol", "cliente");
             json.put("Telefono", telefono);
             json.put("genero", genero);
-
-            String[] partes = fechaNacimiento.split("/");
-            String dia = partes[0];
-            String mes = partes[1];
-            String anio = partes[2];
-
-            if (dia.length() == 1) dia = "0" + dia;
-            if (mes.length() == 1) mes = "0" + mes;
-
-            String fechaSupabase = anio + "-" + mes + "-" + dia;
-            json.put("Fecha_Nacimiento", fechaSupabase);
+            json.put("Fecha_Nacimiento", fechaNacimiento);
 
             RequestBody body = RequestBody.create(json.toString(), JSON);
 
@@ -244,7 +318,8 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(okhttp3.Call call, java.io.IOException e) {
                     runOnUiThread(() ->
-                            Toast.makeText(RegisterActivity.this, "Error guardando usuario: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                            Toast.makeText(RegisterActivity.this, "Error guardando usuario: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                    );
                 }
 
                 @Override
@@ -255,35 +330,62 @@ public class RegisterActivity extends AppCompatActivity {
                     Log.d("SUPABASE_USUARIO", "Respuesta: " + respuesta);
 
                     if (response.isSuccessful()) {
-                        runOnUiThread(() -> {
+                        try {
+                            org.json.JSONArray array = new org.json.JSONArray(respuesta);
+                            org.json.JSONObject usuario = array.getJSONObject(0);
 
-                            SharedPreferences prefs = getSharedPreferences("TrainUpPrefs", MODE_PRIVATE);
+                            long idUsuario = usuario.getLong("ID_Usuario");
 
-                            prefs.edit()
-                                    .putBoolean("isLoggedIn", true)
-                                    .putString("access_token", accessToken)
-                                    .putString("email", email)
-                                    .putString("auth_id", authId)
-                                    .putString("rol", "cliente")
-                                    .remove("id_gimnasio")
-                                    .apply();
+                            runOnUiThread(() -> {
+                                SharedPreferences prefs = getSharedPreferences("TrainUpPrefs", MODE_PRIVATE);
 
-                            Toast.makeText(RegisterActivity.this, "Usuario registrado correctamente", Toast.LENGTH_LONG).show();
+                                prefs.edit()
+                                        .putBoolean("isLoggedIn", true)
+                                        .putString("access_token", accessToken)
+                                        .putString("email", email)
+                                        .putString("auth_id", authId)
+                                        .putString("rol", "cliente")
+                                        .putLong("id_usuario", idUsuario)
+                                        .remove("id_gimnasio")
+                                        .apply();
 
-                            Intent intent = new Intent(RegisterActivity.this, GymListActivity.class);
-                            startActivity(intent);
-                            finish();
-                        });
+                                Toast.makeText(
+                                        RegisterActivity.this,
+                                        "Usuario registrado correctamente",
+                                        Toast.LENGTH_LONG
+                                ).show();
+
+                                Intent intent = new Intent(RegisterActivity.this, GymListActivity.class);
+                                startActivity(intent);
+                                finish();
+                            });
+
+                        } catch (Exception e) {
+                            runOnUiThread(() ->
+                                    Toast.makeText(
+                                            RegisterActivity.this,
+                                            "Error leyendo ID usuario: " + e.getMessage(),
+                                            Toast.LENGTH_LONG
+                                    ).show()
+                            );
+                        }
+
                     } else {
                         runOnUiThread(() ->
-                                Toast.makeText(RegisterActivity.this, "Error tabla Usuario: " + respuesta, Toast.LENGTH_LONG).show());
+                                Toast.makeText(
+                                        RegisterActivity.this,
+                                        "Error tabla Usuario: " + respuesta,
+                                        Toast.LENGTH_LONG
+                                ).show()
+                        );
                     }
                 }
             });
 
         } catch (Exception e) {
             runOnUiThread(() ->
-                    Toast.makeText(RegisterActivity.this, "Error insertando usuario: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                    Toast.makeText(RegisterActivity.this, "Error insertando usuario: " + e.getMessage(), Toast.LENGTH_LONG).show()
+            );
         }
     }
 }

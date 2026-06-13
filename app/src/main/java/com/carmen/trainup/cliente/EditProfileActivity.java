@@ -1,5 +1,6 @@
 package com.carmen.trainup.cliente;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -29,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.UUID;
 
 import okhttp3.MediaType;
@@ -90,6 +92,10 @@ public class EditProfileActivity extends AppCompatActivity {
         btnGuardarPerfil = findViewById(R.id.btnGuardarPerfil);
         btnCancelarEditarPerfil = findViewById(R.id.btnCancelarEditarPerfil);
 
+        etFechaNacimientoEditar.setFocusable(false);
+        etFechaNacimientoEditar.setClickable(true);
+        etFechaNacimientoEditar.setOnClickListener(v -> mostrarDatePicker());
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
@@ -108,6 +114,31 @@ public class EditProfileActivity extends AppCompatActivity {
         btnCambiarImagenPerfil.setOnClickListener(v -> abrirGaleria());
         btnGuardarPerfil.setOnClickListener(v -> guardarCambios());
         btnCancelarEditarPerfil.setOnClickListener(v -> finish());
+    }
+
+    private void mostrarDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    String fecha = selectedYear + "-"
+                            + String.format("%02d", selectedMonth + 1)
+                            + "-"
+                            + String.format("%02d", selectedDay);
+
+                    etFechaNacimientoEditar.setText(fecha);
+                },
+                year,
+                month,
+                day
+        );
+
+        datePickerDialog.show();
     }
 
     private void cargarDatosUsuario() {
@@ -277,6 +308,13 @@ public class EditProfileActivity extends AppCompatActivity {
             }
 
             InputStream inputStream = getContentResolver().openInputStream(imageUri);
+
+            if (inputStream == null) {
+                runOnUiThread(() ->
+                        Toast.makeText(this, "No se pudo abrir la imagen", Toast.LENGTH_LONG).show());
+                return "";
+            }
+
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
             byte[] buffer = new byte[4096];
@@ -285,6 +323,8 @@ public class EditProfileActivity extends AppCompatActivity {
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 byteArrayOutputStream.write(buffer, 0, bytesRead);
             }
+
+            inputStream.close();
 
             byte[] imageBytes = byteArrayOutputStream.toByteArray();
 

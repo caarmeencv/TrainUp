@@ -7,13 +7,56 @@
     android:background="#FFFFFF"
     android:padding="24dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btnMenu"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:background="@drawable/bg_menu_pink"
+            android:gravity="center"
+            android:text="≡"
+            android:textColor="#111111"
+            android:textSize="34sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="TrainUp"
+            android:textColor="#FF2D7A"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:contentDescription="Logo TrainUp"
+            android:padding="8dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/logo_trainup" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="#FFD6E5" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Clases"
         android:textColor="#111111"
         android:textSize="30sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginTop="24dp" />
 
     <TextView
         android:layout_width="wrap_content"

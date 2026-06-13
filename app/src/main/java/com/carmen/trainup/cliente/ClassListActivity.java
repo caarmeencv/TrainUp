@@ -30,6 +30,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
+import com.carmen.trainup.utils.MenuHelper;
+
 public class ClassListActivity extends AppCompatActivity {
 
     private RecyclerView rvClases;
@@ -46,6 +48,7 @@ public class ClassListActivity extends AppCompatActivity {
     private String emailUsuario;
     private long idUsuario = -1;
     private int idGimnasio = -1;
+    private TextView btnMenu;
 
     private static final MediaType JSON =
             MediaType.get("application/json; charset=utf-8");
@@ -62,6 +65,9 @@ public class ClassListActivity extends AppCompatActivity {
         rvClases = findViewById(R.id.rvClases);
         txtSinClases = findViewById(R.id.txtSinClases);
         btnMisReservas = findViewById(R.id.btnMisReservas);
+        btnMenu = findViewById(R.id.btnMenu);
+        
+        MenuHelper.configurarMenu(this, btnMenu);
 
         listaClases = new ArrayList<>();
         clasesReservadas = new HashSet<>();

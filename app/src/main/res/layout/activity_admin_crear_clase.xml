@@ -56,13 +56,19 @@
             android:id="@+id/etFecha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Fecha 2026-06-11" />
+            android:hint="Seleccionar fecha"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none" />
 
         <EditText
             android:id="@+id/etHora"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Hora 18:00" />
+            android:hint="Seleccionar hora"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none" />
 
         <EditText
             android:id="@+id/etPlazas"

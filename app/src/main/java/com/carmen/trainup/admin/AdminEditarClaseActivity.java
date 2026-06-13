@@ -1,6 +1,8 @@
 package com.carmen.trainup.admin;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -20,6 +22,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.Calendar;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -66,6 +69,14 @@ public class AdminEditarClaseActivity extends AppCompatActivity {
         btnSeleccionarImagen = findViewById(R.id.btnSeleccionarImagen);
         btnGuardarClase = findViewById(R.id.btnGuardarClase);
 
+        etFecha.setFocusable(false);
+        etFecha.setClickable(true);
+        etFecha.setOnClickListener(v -> mostrarDatePicker());
+
+        etHora.setFocusable(false);
+        etHora.setClickable(true);
+        etHora.setOnClickListener(v -> mostrarTimePicker());
+
         idClase = getIntent().getLongExtra("idClase", -1);
 
         etNombreClase.setText(getIntent().getStringExtra("nombre"));
@@ -81,6 +92,51 @@ public class AdminEditarClaseActivity extends AppCompatActivity {
 
         btnSeleccionarImagen.setOnClickListener(v -> abrirGaleria());
         btnGuardarClase.setOnClickListener(v -> editarClase());
+    }
+
+    private void mostrarDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    String fecha = selectedYear + "-"
+                            + String.format("%02d", selectedMonth + 1)
+                            + "-"
+                            + String.format("%02d", selectedDay);
+
+                    etFecha.setText(fecha);
+                },
+                year,
+                month,
+                day
+        );
+
+        datePickerDialog.show();
+    }
+
+    private void mostrarTimePicker() {
+        Calendar calendar = Calendar.getInstance();
+
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(
+                this,
+                (view, selectedHour, selectedMinute) -> {
+                    String hora = String.format("%02d:%02d", selectedHour, selectedMinute);
+                    etHora.setText(hora);
+                },
+                hour,
+                minute,
+                true
+        );
+
+        timePickerDialog.show();
     }
 
     private void abrirGaleria() {
